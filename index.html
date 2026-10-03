@@ -7,10 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Lucide Icons, html2canvas & jsPDF -->
+  <!-- Lucide Icons, html2canvas, jsPDF & QRCode.js -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --knu-red: #b80000;
@@ -31,7 +32,6 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
     body { background-color: var(--gray-50); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
-    
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -39,7 +39,6 @@
     .spin {
       animation: spin 1s linear infinite;
     }
-
     /* Header */
     header { background: linear-gradient(135deg, var(--dark-blue) 0%, #172554 60%, var(--black) 100%); color: var(--white); border-bottom: 4px solid var(--knu-red); padding: 1.1rem 2rem; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow); }
     .header-cnt { max-width: 1440px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
@@ -56,7 +55,6 @@
     .btn-red:hover { background: var(--knu-red-hover); }
     .btn-secondary { background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
     .btn-secondary:hover { background: var(--gray-200); color: var(--black); }
-    
     /* LARGE MAIN SWITCHER */
     .master-switcher-wrap { max-width: 1440px; width: 100%; margin: 1.5rem auto 0; padding: 0 1.5rem; }
     .master-switcher { display: flex; background: var(--white); border: 2px solid var(--gray-200); border-radius: 14px; padding: 0.4rem; gap: 0.5rem; box-shadow: var(--shadow); }
@@ -64,10 +62,8 @@
     .master-switch-btn:hover { background: var(--gray-100); color: var(--black); }
     .master-switch-btn.active { background: var(--dark-blue); color: var(--white); box-shadow: 0 4px 12px rgba(15,23,42,0.25); }
     .master-switch-btn.active.switch-pres { background: var(--knu-red); box-shadow: 0 4px 12px rgba(184,0,0,0.3); }
-    
     /* Main layout */
     main { max-width: 1440px; width: 100%; margin: 1.25rem auto; padding: 0 1.5rem; flex: 1; }
-    
     /* KPI Stats */
     .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .kpi-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1.1rem; box-shadow: var(--shadow); position: relative; overflow: hidden; transition: transform 0.2s; }
@@ -80,8 +76,7 @@
     .kpi-num { font-size: 1.9rem; font-weight: 800; line-height: 1.1; color: var(--black); }
     .kpi-red .kpi-num { color: var(--knu-red); }
     .kpi-sub { font-size: 0.75rem; color: var(--gray-600); margin-top: 0.4rem; display: flex; align-items: center; gap: 0.3rem; }
-    
-    /* Quick Filter Tabs (Cleaned of duplicated text numbers) */
+    /* Quick Filter Tabs */
     .tabs-bar { display: flex; gap: 0.6rem; background: var(--white); padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--gray-200); margin-bottom: 1.5rem; flex-wrap: wrap; box-shadow: var(--shadow); }
     .tab-btn { background: transparent; border: none; padding: 0.65rem 1.1rem; font-weight: 700; font-size: 0.85rem; border-radius: 8px; cursor: pointer; color: var(--gray-600); display: flex; align-items: center; gap: 0.5rem; transition: 0.15s; }
     .tab-btn:hover { background: var(--gray-100); color: var(--black); }
@@ -89,7 +84,6 @@
     .tab-btn.tab-win.active { background: var(--knu-red); }
     .count-pill { background: rgba(0,0,0,0.08); padding: 0.15rem 0.5rem; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
     .tab-btn.active .count-pill { background: rgba(255,255,255,0.25); color: var(--white); }
-    
     /* Fields Matrix */
     .fields-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
     .fields-header h3 { font-size: 1rem; font-weight: 700; color: var(--dark-blue); display: flex; align-items: center; gap: 0.5rem; }
@@ -104,7 +98,6 @@
     .field-meta-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--gray-600); margin-bottom: 0.35rem; }
     .progress-track { height: 5px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--knu-red); border-radius: 3px; }
-    
     /* Toolbar */
     .toolbar { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; box-shadow: var(--shadow); }
     .search-box { flex: 1 1 260px; position: relative; }
@@ -112,7 +105,6 @@
     .search-box input { width: 100%; padding: 0.65rem 0.85rem 0.65rem 2.3rem; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 0.85rem; outline: none; }
     .search-box input:focus { border-color: var(--knu-red); }
     .select-ctl { padding: 0.65rem 0.85rem; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 0.82rem; background: var(--white); color: var(--black); outline: none; font-weight: 500; cursor: pointer; }
-    
     /* Table */
     .table-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
     .table-meta { padding: 0.85rem 1.25rem; background: #fafbfc; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 600; color: var(--gray-600); flex-wrap: wrap; gap: 0.5rem; }
@@ -124,7 +116,6 @@
     tbody tr.is-winner { background: #fffcfc; }
     tbody tr.is-winner:hover { background: #fef2f2; }
     td { padding: 0.75rem 1rem; vertical-align: middle; }
-    
     /* Badges */
     .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; border-radius: 20px; font-weight: 700; font-size: 0.72rem; white-space: nowrap; }
     .badge-winner { background: var(--knu-red-soft); color: var(--knu-red); border: 1px solid #fca5a5; }
@@ -134,17 +125,14 @@
     .bar-mini { width: 75px; height: 5px; background: var(--gray-200); border-radius: 3px; overflow: hidden; margin-top: 3px; }
     .bar-mini-fill { height: 100%; background: var(--dark-blue); }
     .is-winner .bar-mini-fill { background: var(--knu-red); }
-    
     /* ==============================================================
-       PRESENTATION 4:3 SECTION (DEFAULT VIEW, ANCHORED TOP, HIGH LEGIBILITY)
+       PRESENTATION 4:3 SECTION
        ============================================================== */
     #view-presentation { display: block; }
     #view-dashboard { display: none; }
-
     .pres-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem; background: var(--white); padding: 0.85rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--gray-200); box-shadow: var(--shadow); }
     .pres-nav-grp { display: flex; align-items: center; gap: 0.75rem; }
     .pres-counter { font-weight: 700; font-size: 0.9rem; color: var(--dark-blue); min-width: 100px; text-align: center; }
-    
     /* 4:3 Slide Frame on Screen */
     .pres-viewport { display: flex; justify-content: center; align-items: center; margin-bottom: 2rem; }
     .slide-4x3 {
@@ -175,8 +163,7 @@
       height: 6px;
       background: linear-gradient(90deg, var(--knu-red) 0%, var(--dark-blue) 100%);
     }
-    
-    /* Fixed Height Header */
+    /* Header with Pure QR Button */
     .slide-header-box {
       display: flex;
       justify-content: space-between;
@@ -190,6 +177,13 @@
       display: flex;
       align-items: center;
       gap: 1.15rem;
+      min-width: 0;
+    }
+    .slide-header-right-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex-shrink: 0;
     }
     .slide-large-icon {
       width: 58px;
@@ -231,8 +225,35 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
-    /* Prominent Analytical Remark Banner */
+    /* CLICKABLE PURE QR BUTTON IN RIGHT TOP CORNER */
+    .slide-qr-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 4px;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      cursor: pointer;
+      width: 54px;
+      height: 54px;
+    }
+    .slide-qr-btn:hover {
+      border-color: var(--knu-red);
+      box-shadow: 0 4px 12px rgba(184,0,0,0.2);
+      transform: translateY(-1px);
+    }
+    .slide-qr-img {
+      width: 44px;
+      height: 44px;
+      display: block;
+      border-radius: 4px;
+    }
+    /* Analytical Remark Banner (110% Font Size) */
     .slide-remark-bar {
       display: flex;
       align-items: center;
@@ -242,7 +263,7 @@
       border-left: 4px solid var(--knu-red);
       border-radius: 9px;
       padding: 0.6rem 1rem;
-      font-size: 0.96rem;
+      font-size: 1.06rem; /* 110% of 0.96rem */
       font-weight: 700;
       color: var(--dark-blue);
       line-height: 1.35;
@@ -279,8 +300,7 @@
       color: var(--gray-600);
       text-transform: uppercase;
     }
-
-    /* SLIDE BODY: STICKY TO TOP TO PREVENT FLICKERING/JUMPING */
+    /* Slide Body */
     .slide-body {
       flex: 1;
       display: flex;
@@ -288,8 +308,135 @@
       justify-content: flex-start;
       padding-top: 0.45rem;
       margin: 0.5rem 0;
+      min-height: 0;
+      overflow: hidden;
     }
-    
+    /* ==============================================================
+       NEW: FIELDS COMPARATIVE MAP SLIDE STYLES
+       ============================================================== */
+    .field-map-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.38rem;
+      margin-top: 0.15rem;
+    }
+    .field-map-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem;
+      gap: 0.75rem;
+      transition: transform 0.15s;
+    }
+    .field-map-row:hover {
+      background: #ffffff;
+      border-color: var(--knu-red);
+    }
+    .fm-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      width: 260px;
+      flex-shrink: 0;
+    }
+    .fm-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .fm-icon i, .fm-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .fm-title-box {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .fm-code {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--gray-400);
+      line-height: 1;
+    }
+    .fm-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0.15rem;
+    }
+    .fm-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+    .fm-bar-track {
+      flex: 1;
+      height: 12px;
+      background: var(--gray-200);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .fm-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+    .fm-pct-lbl {
+      font-size: 0.84rem;
+      font-weight: 800;
+      min-width: 48px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .fm-right {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+    .fm-badge-win {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--knu-red);
+      background: var(--knu-red-soft);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #fca5a5;
+      white-space: nowrap;
+    }
+    .fm-badge-total {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+      background: var(--gray-100);
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      border: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+    .fm-badge-young {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #6d28d9;
+      background: #ede9fe;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
     /* 2-Column Winners Grid */
     .slide-winners-grid {
       display: grid;
@@ -321,8 +468,7 @@
       min-width: 22px;
       flex-shrink: 0;
     }
-    
-    /* 2-Line Name Block */
+    /* 2-Line Name Block (110% Font Size) */
     .slide-name-block {
       display: flex;
       flex-direction: column;
@@ -332,7 +478,7 @@
     }
     .slide-name-l1 {
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1.16rem; /* 110% of 1.05rem */
       color: var(--black);
       white-space: nowrap;
       display: flex;
@@ -342,7 +488,7 @@
     }
     .slide-name-l2 {
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.97rem; /* 110% of 0.88rem */
       color: var(--gray-600);
       white-space: nowrap;
       line-height: 1.25;
@@ -372,6 +518,90 @@
       color: var(--gray-600);
       margin-top: 0.15rem;
     }
+    /* ALL 85 WINNERS LIST SLIDES (COMPACT, CALIBRATED, NO CROPPING) */
+    .all-names-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.32rem 1.25rem;
+      margin-top: 0.2rem;
+    }
+    .all-names-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.22rem;
+    }
+    .all-names-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.28rem 0.65rem;
+      border-radius: 7px;
+      background: #fff8f8;
+      border: 1px solid #fecdd3;
+      border-left: 3px solid var(--knu-red);
+      line-height: 1.2;
+      min-height: 28px;
+    }
+    .an-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+    }
+    /* DASHED DOUBLE PLACES: № НСД / № КНУ */
+    .an-rank {
+      font-weight: 800;
+      font-size: 0.76rem;
+      color: var(--knu-red);
+      min-width: 58px;
+      text-align: center;
+      background: rgba(184, 0, 0, 0.07);
+      padding: 0.15rem 0.4rem;
+      border-radius: 5px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .an-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .an-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+      margin-left: 0.6rem;
+    }
+    .an-field-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(184, 0, 0, 0.08);
+      color: var(--knu-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .an-field-icon i, .an-field-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+    .an-score {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--dark-blue);
+      min-width: 48px;
+      text-align: right;
+    }
     .slide-footer-compact {
       display: flex;
       justify-content: space-between;
@@ -389,7 +619,6 @@
       color: var(--gray-600);
       font-weight: 600;
     }
-    
     /* ==============================================================
        EXACT 4:3 PDF RENDER OVERLAY
        ============================================================== */
@@ -439,7 +668,6 @@
       height: 6px;
       background: linear-gradient(90deg, #b80000 0%, #0f172a 100%);
     }
-    
     /* Modal */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,0.65); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
     .modal-box { background: var(--white); border-radius: var(--radius); max-width: 600px; width: 100%; padding: 1.75rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); position: relative; }
@@ -450,7 +678,6 @@
     .modal-alert { background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 0.75rem 1rem; color: #9f1239; font-size: 0.8rem; display: flex; gap: 0.6rem; align-items: flex-start; }
     footer { background: var(--dark-blue); color: var(--gray-400); padding: 1.5rem 2rem; font-size: 0.82rem; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06); }
     .footer-cnt { max-width: 1440px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    
     @media print {
       @page {
         size: 10in 7.5in landscape;
@@ -486,7 +713,6 @@
       </div>
     </div>
   </header>
-
   <!-- MASTER VIEW SWITCHER (Default: Presentation) -->
   <div class="master-switcher-wrap">
     <div class="master-switcher">
@@ -500,7 +726,6 @@
       </button>
     </div>
   </div>
-
   <main>
     <!-- ==================== VIEW 1: DASHBOARD ==================== -->
     <div id="view-dashboard">
@@ -547,8 +772,7 @@
           <div class="kpi-sub">Тип посади, кордон або інша стипендія</div>
         </div>
       </section>
-
-      <!-- TABS (Cleaned of duplicated text numbers) -->
+      <!-- TABS -->
       <section class="tabs-bar">
         <button class="tab-btn tab-win active" onclick="setMode('pretenders')">
           <i data-lucide="award" style="width:16px;height:16px;"></i>
@@ -571,7 +795,6 @@
           <span class="count-pill">36</span>
         </button>
       </section>
-
       <!-- SCIENTIFIC FIELDS MATRIX -->
       <section>
         <div class="fields-header">
@@ -583,7 +806,6 @@
         </div>
         <div class="fields-grid" id="fields-grid"></div>
       </section>
-
       <!-- TOOLBAR -->
       <section class="toolbar">
         <div class="search-box">
@@ -605,8 +827,7 @@
           <i data-lucide="download" style="width:14px;height:14px;"></i> CSV
         </button>
       </section>
-
-      <!-- DATA TABLE (WITHOUT USELESS "УСТАНОВА" COLUMN) -->
+      <!-- DATA TABLE -->
       <section class="table-card">
         <div class="table-meta">
           <div id="results-count">Відображено: <strong>85</strong> із 234 записів</div>
@@ -639,15 +860,14 @@
         </div>
       </section>
     </div>
-
-    <!-- ==================== VIEW 2: 4:3 PRESENTATION SLIDES (DEFAULT) ==================== -->
+    <!-- ==================== VIEW 2: 4:3 PRESENTATION SLIDES ==================== -->
     <div id="view-presentation">
       <div class="pres-toolbar">
         <div class="pres-nav-grp">
           <button class="btn btn-secondary" onclick="prevSlide()">
             <i data-lucide="chevron-left" style="width:16px;height:16px;"></i> Попередній
           </button>
-          <span class="pres-counter" id="slide-indicator">Слайд 1 / 10</span>
+          <span class="pres-counter" id="slide-indicator">Слайд 1 / 15</span>
           <button class="btn btn-secondary" onclick="nextSlide()">
             Наступний <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
           </button>
@@ -661,17 +881,14 @@
           </button>
         </div>
       </div>
-
       <!-- Live 4:3 Slide Display -->
       <div class="pres-viewport">
         <div class="slide-4x3" id="live-slide-box"></div>
       </div>
     </div>
   </main>
-
   <!-- CONTAINER FOR BATCH 4:3 PDF EXPORT -->
   <div id="pdf-render-zone"></div>
-
   <!-- MODAL FOR RESEARCHER -->
   <div class="modal-backdrop" id="researcher-modal" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
@@ -710,7 +927,6 @@
       </div>
     </div>
   </div>
-
   <!-- FOOTER -->
   <footer>
     <div class="footer-cnt">
@@ -718,24 +934,21 @@
       <div>Офіційні дані рейтингу НСД України МОН • Загалом 234 подання / 85 переможців</div>
     </div>
   </footer>
-
   <script>
     // 1. Словник напрямів та унікальних іконок Lucide
     const FIELDS = {
-      "02": { name: "Математика та статистика", icon: "calculator", color: "#2563eb" },
-      "03": { name: "Фізика, ядерна фізика та астрономія", icon: "atom", color: "#7c3aed" },
-      "04": { name: "Хімія, хімічні технології та фармація", icon: "flask-conical", color: "#059669" },
-      "05": { name: "Науки про Землю та довкілля", icon: "globe", color: "#d97706" },
-      "06": { name: "Біологія, медицина та реабілітація", icon: "dna", color: "#dc2626" },
-      "07": { name: "Інформаційні технології та електроніка", icon: "cpu", color: "#0891b2" },
-      "12": { name: "Розвиток людського капіталу, соцнауки", icon: "users", color: "#ea580c" },
-      "13": { name: "Економіка, бізнес та право", icon: "scale", color: "#4f46e5" },
-      "14": { name: "Гуманітарні науки і мистецтво", icon: "book-open", color: "#9333ea" }
+      "02": { name: "Математика та статистика", short: "Математика", icon: "calculator", color: "#2563eb" },
+      "03": { name: "Фізика, ядерна фізика та астрономія", short: "Фізика", icon: "atom", color: "#7c3aed" },
+      "04": { name: "Хімія, хімічні технології та фармація", short: "Хімія", icon: "flask-conical", color: "#059669" },
+      "05": { name: "Науки про Землю та довкілля", short: "Земля", icon: "globe", color: "#d97706" },
+      "06": { name: "Біологія, медицина та реабілітація", short: "Біологія", icon: "dna", color: "#dc2626" },
+      "07": { name: "Інформаційні технології та електроніка", short: "ІТ", icon: "cpu", color: "#0891b2" },
+      "12": { name: "Розвиток людського капіталу, соцнауки", short: "Соцнауки", icon: "users", color: "#ea580c" },
+      "13": { name: "Економіка, бізнес та право", short: "Економіка", icon: "scale", color: "#4f46e5" },
+      "14": { name: "Гуманітарні науки і мистецтво", short: "Гуманітарні", icon: "book-open", color: "#9333ea" }
     };
-
     // 2. Сортування напрямів за кількістю претендентів (від 20 до 0)
     const SORTED_FIELD_CODES = ["14", "04", "06", "03", "02", "13", "12", "07", "05"];
-
     const STATUS_MAP = {
       0: "",
       1: "Тип посади не наукова/науково-педагогічна",
@@ -744,7 +957,6 @@
       4: "Порушення абзацу 11 п.5 Порядку; Тип посади не наукова/науково-педагогічна",
       5: "Призначена інша державна стипендія"
     };
-
     // 3. ПОВНИЙ ВЕРИФІКОВАНИЙ МАСИВ (234 ЗАПИСИ) КНУ ІМЕНІ ТАРАСА ШЕВЧЕНКА
     const DATA = [
       // 02. Математика (12)
@@ -991,7 +1203,8 @@
       [521727,"219","Міхіденко Катерина Олександрівна","14",1,0.298,4.1,0,0,0],
       [488612,"222","Зеров Костянтин Олександрович","14",1,0.232,3.2,0,0,0]
     ];
-
+    // Повний масив ЛИШЕ 85 ПЕРЕМОЖЦІВ (ПРЕТЕНДЕНТІВ), відсортований за спаданням балу НСД
+    const WINNERS_ONLY_SORTED = DATA.filter(d => d[7] === 1).sort((a, b) => b[5] - a[5]);
     // Стан інтерфейсу: за замовчуванням відкриваємо презентацію 4:3
     let currentMainView = 'presentation';
     let currentMode = 'pretenders';
@@ -999,10 +1212,40 @@
     let searchQuery = '';
     let categoryFilter = 'all';
     let sortMode = 'score-desc';
-
     // Стан слайдів презентації
     let currentSlideIdx = 0;
-
+    let QR_CODE_DATA_URL = '';
+    // Генерація QR-коду на дашборд
+    function initQRCode() {
+      try {
+        const qrContainer = document.createElement('div');
+        new QRCode(qrContainer, {
+          text: "https://data.nauka.gov.ua/dashboard-nsd/",
+          width: 128,
+          height: 128,
+          colorDark: "#0f172a",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        const cvs = qrContainer.querySelector('canvas');
+        if (cvs) {
+          QR_CODE_DATA_URL = cvs.toDataURL('image/png');
+        }
+      } catch (err) {
+        console.warn("Помилка генерації QR-коду:", err);
+      }
+    }
+    // Чиста клікабельна QR-кнопка БЕЗ ТЕКСТУ
+    function getQRButtonHtml() {
+      const qrInner = QR_CODE_DATA_URL 
+        ? `<img src="${QR_CODE_DATA_URL}" class="slide-qr-img" alt="QR-код НСД" />`
+        : `<i data-lucide="qr-code" style="width:36px;height:36px;color:var(--dark-blue);"></i>`;
+      return `
+        <a href="https://data.nauka.gov.ua/dashboard-nsd/" target="_blank" rel="noopener noreferrer" class="slide-qr-btn" title="Оригінальний дашборд НСД МОН України (data.nauka.gov.ua/dashboard-nsd/)">
+          ${qrInner}
+        </a>
+      `;
+    }
     // Допоміжна функція розбиття ПІБ: Прізвище (рядок 1) та Ім'я/По батькові (рядок 2)
     function formatName2Lines(fullName) {
       const parts = fullName.trim().split(/\s+/);
@@ -1012,15 +1255,27 @@
         line2: parts.slice(1).join('\u00A0')
       };
     }
-
+    // Скорочений формат ПІБ (Прізвище + Ініціали з нерозривним пробілом)
+    function formatSurnameInitials(fullName) {
+      const parts = fullName.trim().split(/\s+/);
+      if (parts.length <= 1) return fullName;
+      const surname = parts[0];
+      const initials = parts.slice(1).map(p => {
+        if (p.includes('-')) {
+          return p.split('-').filter(Boolean).map(sub => sub[0].toUpperCase() + '.').join('-');
+        }
+        return p ? p[0].toUpperCase() + '.' : '';
+      }).join('\u00A0');
+      return `${surname}\u00A0${initials}`;
+    }
     // Ініціалізація
     window.addEventListener('DOMContentLoaded', () => {
+      initQRCode();
       populateSortedSelect();
       renderFields();
       applyFilters();
       setupEvents();
       renderCurrentSlide();
-
       // Гарячі клавіші перемикання слайдів
       window.addEventListener('keydown', (e) => {
         if (currentMainView === 'presentation') {
@@ -1029,7 +1284,6 @@
         }
       });
     });
-
     // Заповнення селектора напрямів за спаданням переможців
     function populateSortedSelect() {
       const select = document.getElementById('field-filter');
@@ -1042,7 +1296,6 @@
         select.appendChild(opt);
       });
     }
-
     // Перемикач Дашборд / Презентація
     function setMainView(view) {
       currentMainView = view;
@@ -1050,7 +1303,6 @@
       const presView = document.getElementById('view-presentation');
       const btnDash = document.getElementById('switch-dash');
       const btnPres = document.getElementById('switch-pres');
-
       if (view === 'dashboard') {
         dashView.style.display = 'block';
         presView.style.display = 'none';
@@ -1065,7 +1317,6 @@
       }
       lucide.createIcons();
     }
-
     function setupEvents() {
       document.getElementById('search-input').addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase().trim();
@@ -1085,21 +1336,18 @@
         applyFilters();
       });
     }
-
     function setMode(mode) {
       currentMode = mode;
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       event.currentTarget.classList.add('active');
       applyFilters();
     }
-
     function selectFieldCard(code) {
       selectedField = (selectedField === code) ? 'all' : code;
       document.getElementById('field-filter').value = selectedField;
       renderFields();
       applyFilters();
     }
-
     function resetFilters() {
       currentMode = 'all';
       selectedField = 'all';
@@ -1115,7 +1363,6 @@
       renderFields();
       applyFilters();
     }
-
     function renderFields() {
       const grid = document.getElementById('fields-grid');
       let html = '';
@@ -1144,7 +1391,6 @@
       grid.innerHTML = html;
       lucide.createIcons();
     }
-
     function applyFilters() {
       let filtered = DATA.filter(item => {
         if (currentMode === 'pretenders' && item[7] !== 1) return false;
@@ -1160,7 +1406,6 @@
         }
         return true;
       });
-
       filtered.sort((a, b) => {
         if (sortMode === 'score-desc') return b[5] - a[5];
         if (sortMode === 'score-asc') return a[5] - b[5];
@@ -1168,19 +1413,15 @@
         if (sortMode === 'name-asc') return a[2].localeCompare(b[2], 'uk');
         return 0;
       });
-
       renderTable(filtered);
     }
-
     function renderTable(items) {
       const tbody = document.getElementById('table-body');
       document.getElementById('results-count').innerHTML = `Відображено: <strong>${items.length}</strong> із 234 записів`;
-
       if (items.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--gray-600)">За вашим запитом не знайдено жодного дослідника</td></tr>`;
         return;
       }
-
       let html = '';
       items.forEach(d => {
         const [id, rank, name, fCode, isYoung, score, pct, isWin, statusId] = d;
@@ -1229,9 +1470,8 @@
       tbody.innerHTML = html;
       lucide.createIcons();
     }
-
     // ==============================================================
-    // 4:3 PRESENTATION SLIDES GENERATOR (CALIBRATED STRUCTURE, ZERO FLICKER)
+    // 4:3 PRESENTATION SLIDES CONFIGURATION (15 SLIDES TOTAL)
     // ==============================================================
     const SLIDES_CONFIG = [
       {
@@ -1240,6 +1480,14 @@
         icon: "award",
         title: "Київський національний університет<br>імені Тараса Шевченка",
         remark: "Зведений моніторинг результатів конкурсу Національної системи дослідників"
+      },
+      // НОВИЙ СЛАЙД №2: КАРТА ВСІХ 9 НАУКОВИХ НАПРЯМІВ ЗІ СМУГАМИ ЕФЕКТИВНОСТІ
+      {
+        type: "fields_map",
+        tag: "Загальне порівняння • 9 напрямів науки",
+        icon: "bar-chart-3",
+        title: "Карта наукових напрямів КНУ<br>Порівняльна результативність та ефективність",
+        remark: "Рейтинг наукових галузей університету за часткою переможців (%) та кількістю стипендій"
       },
       {
         code: "14",
@@ -1303,10 +1551,47 @@
         icon: "check-circle-2",
         title: "Підсумкова аналітика конкурсу<br>та пріоритети наукового розвитку",
         remark: "Пріоритетні висновки для науково-дослідної частини та ректорату"
+      },
+      // ПОВНИЙ РЕЄСТР ЛИШЕ 85 СТИПЕНДІАТІВ КНУ (4 ЗБАЛАНСОВАНІ СЛАЙДИ, БЕЗ ОБРІЗАННЯ)
+      {
+        type: "winners_list",
+        startIdx: 0,
+        endIdx: 22,
+        tag: "Реєстр стипендіатів • Частина 1/4",
+        icon: "trophy",
+        title: "Повний список стипендіатів КНУ<br>(Позиції 1–22 із 85 претендентів)",
+        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+      },
+      {
+        type: "winners_list",
+        startIdx: 22,
+        endIdx: 44,
+        tag: "Реєстр стипендіатів • Частина 2/4",
+        icon: "trophy",
+        title: "Повний список стипендіатів КНУ<br>(Позиції 23–44 із 85 претендентів)",
+        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+      },
+      {
+        type: "winners_list",
+        startIdx: 44,
+        endIdx: 66,
+        tag: "Реєстр стипендіатів • Частина 3/4",
+        icon: "trophy",
+        title: "Повний список стипендіатів КНУ<br>(Позиції 45–66 із 85 претендентів)",
+        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+      },
+      {
+        type: "winners_list",
+        startIdx: 66,
+        endIdx: 85,
+        tag: "Реєстр стипендіатів • Частина 4/4",
+        icon: "trophy",
+        title: "Повний список стипендіатів КНУ<br>(Позиції 67–85 із 85 претендентів)",
+        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
       }
     ];
-
     function renderSlideHtml(slide, idx, total) {
+      const qrBtnHtml = getQRButtonHtml();
       if (slide.type === "intro") {
         return `
           <div>
@@ -1317,6 +1602,9 @@
                   <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
                   <h2 class="slide-title-compact">Київський&nbsp;національний&nbsp;університет<br>імені&nbsp;Тараса&nbsp;Шевченка</h2>
                 </div>
+              </div>
+              <div class="slide-header-right-group">
+                ${qrBtnHtml}
               </div>
             </div>
             <div class="slide-remark-bar">
@@ -1340,15 +1628,15 @@
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.65rem;">
-              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--gold);padding:0.85rem 1.15rem;border-radius:8px;font-size:0.92rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--gold);padding:0.85rem 1.15rem;border-radius:8px;font-size:1.0rem;">
                 <div><strong>Молоді&nbsp;вчені&nbsp;КНУ:</strong> 34&nbsp;переможці&nbsp;з&nbsp;65&nbsp;поданих&nbsp;заявок</div>
                 <div style="font-weight:800;color:var(--gold);">52.3%&nbsp;успішність</div>
               </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--dark-blue);padding:0.85rem 1.15rem;border-radius:8px;font-size:0.92rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--dark-blue);padding:0.85rem 1.15rem;border-radius:8px;font-size:1.0rem;">
                 <div><strong>Загальний&nbsp;конкурс:</strong> 51&nbsp;стипендіат&nbsp;серед&nbsp;досвідчених&nbsp;науковців&nbsp;університету</div>
                 <div style="font-weight:800;color:var(--dark-blue);">51&nbsp;стипендіат</div>
               </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--knu-red);padding:0.85rem 1.15rem;border-radius:8px;font-size:0.92rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--knu-red);padding:0.85rem 1.15rem;border-radius:8px;font-size:1.0rem;">
                 <div><strong>Ветерани&nbsp;війни:</strong> 1&nbsp;претендент&nbsp;на&nbsp;стипендію&nbsp;з&nbsp;4&nbsp;поданих</div>
                 <div style="font-weight:800;color:var(--knu-red);">1&nbsp;стипендіат</div>
               </div>
@@ -1360,7 +1648,86 @@
           </div>
         `;
       }
-
+      // СЛАЙД 2: КАРТА НАПРЯМІВ ЗІ СМУГАМИ ЕФЕКТИВНОСТІ
+      if (slide.type === "fields_map") {
+        let rowsHtml = '';
+        SORTED_FIELD_CODES.forEach(code => {
+          const f = FIELDS[code];
+          const allInField = DATA.filter(d => d[3] === code);
+          const winInField = allInField.filter(d => d[7] === 1);
+          const youngWinInField = winInField.filter(d => d[4] === 1);
+          const pct = allInField.length ? (winInField.length / allInField.length) * 100 : 0;
+          rowsHtml += `
+            <div class="field-map-row">
+              <div class="fm-left">
+                <div class="fm-icon" style="background:${f.color}15;color:${f.color};">
+                  <i data-lucide="${f.icon}"></i>
+                </div>
+                <div class="fm-title-box">
+                  <span class="fm-code">${code}.</span>
+                  <span class="fm-name" title="${f.name}">${f.name}</span>
+                </div>
+              </div>
+              <div class="fm-center">
+                <div class="fm-bar-track">
+                  <div class="fm-bar-fill" style="width:${Math.max(pct, 2)}%;background:${pct > 0 ? f.color : 'var(--gray-400)'};"></div>
+                </div>
+                <span class="fm-pct-lbl" style="color:${pct > 0 ? f.color : 'var(--gray-400)'};">${pct.toFixed(1)}%</span>
+              </div>
+              <div class="fm-right">
+                <span class="fm-badge-win" title="Претенденти">${winInField.length}&nbsp;прет.</span>
+                <span class="fm-badge-total" title="Подано заявок">${allInField.length}&nbsp;под.</span>
+                <span class="fm-badge-young" title="Молоді вчені-переможці">${youngWinInField.length}&nbsp;мол.</span>
+              </div>
+            </div>
+          `;
+        });
+        return `
+          <div>
+            <div class="slide-header-box">
+              <div class="slide-header-left">
+                <div class="slide-large-icon" style="background:var(--navy);color:var(--white);">
+                  <i data-lucide="bar-chart-3"></i>
+                </div>
+                <div>
+                  <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
+                  <h2 class="slide-title-compact">${slide.title}</h2>
+                </div>
+              </div>
+              <div class="slide-header-right-group">
+                <div class="slide-header-metrics">
+                  <div class="metric-mini">
+                    <span class="m-val" style="color:var(--knu-red);">85</span>
+                    <span class="m-lbl">претендентів</span>
+                  </div>
+                  <div class="metric-mini">
+                    <span class="m-val" style="color:var(--dark-blue);">234</span>
+                    <span class="m-lbl">подано</span>
+                  </div>
+                  <div class="metric-mini">
+                    <span class="m-val" style="color:var(--gold);">36.3%</span>
+                    <span class="m-lbl">ефективність</span>
+                  </div>
+                </div>
+                ${qrBtnHtml}
+              </div>
+            </div>
+            <div class="slide-remark-bar">
+              <i data-lucide="compass"></i>
+              <span>${slide.remark.replace(/ /g, '&nbsp;')}</span>
+            </div>
+          </div>
+          <div class="slide-body">
+            <div class="field-map-list">
+              ${rowsHtml}
+            </div>
+          </div>
+          <div class="slide-footer-compact">
+            <span>Зведена порівняльна карта наукових напрямів КНУ • Впорядковано за спаданням переможців</span>
+            <span>Слайд&nbsp;${idx + 1}&nbsp;/&nbsp;${total}</span>
+          </div>
+        `;
+      }
       if (slide.type === "conclusion") {
         return `
           <div>
@@ -1374,6 +1741,9 @@
                   <h2 class="slide-title-compact">Підсумкова&nbsp;аналітика&nbsp;конкурсу<br>та&nbsp;пріоритети&nbsp;наукового&nbsp;розвитку</h2>
                 </div>
               </div>
+              <div class="slide-header-right-group">
+                ${qrBtnHtml}
+              </div>
             </div>
             <div class="slide-remark-bar">
               <i data-lucide="${slide.icon || 'trending-up'}"></i>
@@ -1383,16 +1753,16 @@
           <div class="slide-body">
             <div style="display:flex;flex-direction:column;gap:0.75rem;">
               <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--knu-red);padding:1rem 1.25rem;border-radius:8px;">
-                <div style="font-weight:800;font-size:1.05rem;color:var(--black);">4&nbsp;ключові&nbsp;напрями&nbsp;дають&nbsp;73%&nbsp;стипендіатів</div>
-                <div style="font-size:0.9rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">Гуманітарні&nbsp;науки&nbsp;(20),&nbsp;Хімія&nbsp;(18),&nbsp;Біологія&nbsp;(13)&nbsp;та&nbsp;Фізика&nbsp;(11)&nbsp;сукупно&nbsp;забезпечують&nbsp;62&nbsp;із&nbsp;85&nbsp;стипендіатів&nbsp;КНУ.</div>
+                <div style="font-weight:800;font-size:1.15rem;color:var(--black);">4&nbsp;ключові&nbsp;напрями&nbsp;дають&nbsp;73%&nbsp;стипендіатів</div>
+                <div style="font-size:1.0rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">Гуманітарні&nbsp;науки&nbsp;(20),&nbsp;Хімія&nbsp;(18),&nbsp;Біологія&nbsp;(13)&nbsp;та&nbsp;Фізика&nbsp;(11)&nbsp;сукупно&nbsp;забезпечують&nbsp;62&nbsp;із&nbsp;85&nbsp;стипендіатів&nbsp;КНУ.</div>
               </div>
               <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid var(--gold);padding:1rem 1.25rem;border-radius:8px;">
-                <div style="font-weight:800;font-size:1.05rem;color:var(--black);">Висока&nbsp;результативність&nbsp;молодих&nbsp;науковців</div>
-                <div style="font-size:0.9rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">34&nbsp;молодих&nbsp;вчених&nbsp;визнано&nbsp;претендентами&nbsp;(52.3%&nbsp;успішність&nbsp;—&nbsp;значно&nbsp;вище&nbsp;за&nbsp;загальний&nbsp;рівень&nbsp;участі&nbsp;по&nbsp;ЗВО).</div>
+                <div style="font-weight:800;font-size:1.15rem;color:var(--black);">Висока&nbsp;результативність&nbsp;молодих&nbsp;науковців</div>
+                <div style="font-size:1.0rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">34&nbsp;молодих&nbsp;вчених&nbsp;визнано&nbsp;претендентами&nbsp;(52.3%&nbsp;успішність&nbsp;—&nbsp;значно&nbsp;вище&nbsp;за&nbsp;загальний&nbsp;рівень&nbsp;участі&nbsp;по&nbsp;ЗВО).</div>
               </div>
               <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-left:4px solid #e11d48;padding:1rem 1.25rem;border-radius:8px;">
-                <div style="font-weight:800;font-size:1.05rem;color:var(--black);">Зона&nbsp;уваги&nbsp;(Зауваження&nbsp;комісії&nbsp;та&nbsp;Науки&nbsp;про&nbsp;Землю)</div>
-                <div style="font-size:0.9rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">36&nbsp;подань&nbsp;отримали&nbsp;службові&nbsp;зауваження&nbsp;(тип&nbsp;посади,&nbsp;термін&nbsp;за&nbsp;кордоном).&nbsp;У&nbsp;напрямі&nbsp;05&nbsp;(Земля)&nbsp;—&nbsp;0&nbsp;претендентів&nbsp;із&nbsp;8.</div>
+                <div style="font-weight:800;font-size:1.15rem;color:var(--black);">Зона&nbsp;уваги&nbsp;(Зауваження&nbsp;комісії&nbsp;та&nbsp;Науки&nbsp;про&nbsp;Землю)</div>
+                <div style="font-size:1.0rem;color:var(--gray-600);margin-top:0.3rem;line-height:1.4;">36&nbsp;подань&nbsp;отримали&nbsp;службові&nbsp;зауваження&nbsp;(тип&nbsp;посади,&nbsp;термін&nbsp;за&nbsp;кордоном).&nbsp;У&nbsp;напрямі&nbsp;05&nbsp;(Земля)&nbsp;—&nbsp;0&nbsp;претендентів&nbsp;із&nbsp;8.</div>
               </div>
             </div>
           </div>
@@ -1402,14 +1772,92 @@
           </div>
         `;
       }
-
+      // СЛАЙДИ РЕЄСТРУ 85 ПЕРЕМОЖЦІВ (4 ЧАСТИНИ: 22, 22, 22, 19 — ПОВНИЙ КОМФОРТ БЕЗ ОБРІЗАННЯ)
+      if (slide.type === "winners_list") {
+        const sliceData = WINNERS_ONLY_SORTED.slice(slide.startIdx, slide.endIdx);
+        const midPoint = Math.ceil(sliceData.length / 2);
+        const col1 = sliceData.slice(0, midPoint);
+        const col2 = sliceData.slice(midPoint);
+        const renderRow = (item, relIdx) => {
+          const overallRank = slide.startIdx + relIdx + 1;
+          const [id, origRank, name, fCode, isYoung, score] = item;
+          const f = FIELDS[fCode];
+          const shortName = formatSurnameInitials(name);
+          return `
+            <div class="all-names-row">
+              <div class="an-left">
+                <span class="an-rank" title="Місце в Україні / Місце в КНУ">${origRank}&nbsp;/&nbsp;${overallRank}</span>
+                <span class="an-name" title="${name}">
+                  ${shortName}
+                  ${isYoung ? '<span class="young-spark-badge" title="Молодий вчений"><i data-lucide="sparkles" style="width:13px;height:13px;"></i></span>' : ''}
+                </span>
+              </div>
+              <div class="an-right">
+                <span class="an-field-icon" title="${fCode}. ${f.name}">
+                  <i data-lucide="${f.icon}"></i>
+                </span>
+                <span class="an-score">${score.toFixed(3)}</span>
+              </div>
+            </div>
+          `;
+        };
+        return `
+          <div>
+            <div class="slide-header-box">
+              <div class="slide-header-left">
+                <div class="slide-large-icon" style="background:var(--knu-red);color:var(--white);">
+                  <i data-lucide="trophy"></i>
+                </div>
+                <div>
+                  <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
+                  <h2 class="slide-title-compact">${slide.title}</h2>
+                </div>
+              </div>
+              <div class="slide-header-right-group">
+                <div class="slide-header-metrics">
+                  <div class="metric-mini">
+                    <span class="m-val" style="color:var(--knu-red);">${slide.startIdx + 1}–${Math.min(slide.endIdx, WINNERS_ONLY_SORTED.length)}</span>
+                    <span class="m-lbl">позиції</span>
+                  </div>
+                  <div class="metric-mini">
+                    <span class="m-val" style="color:var(--dark-blue);">85</span>
+                    <span class="m-lbl">всього</span>
+                  </div>
+                </div>
+                ${qrBtnHtml}
+              </div>
+            </div>
+            <div class="slide-remark-bar">
+              <i data-lucide="award"></i>
+              <span>${slide.remark.replace(/ /g, '&nbsp;')}</span>
+            </div>
+          </div>
+          <div class="slide-body">
+            <div class="all-names-grid">
+              <div class="all-names-col">
+                ${col1.map((item, i) => renderRow(item, i)).join('')}
+              </div>
+              <div class="all-names-col">
+                ${col2.map((item, i) => renderRow(item, midPoint + i)).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="slide-footer-compact">
+            <span><strong style="color:var(--knu-red)">№ НСД / № КНУ</strong> — місце в Україні / місце в КНУ • Позиції ${slide.startIdx + 1}–${Math.min(slide.endIdx, WINNERS_ONLY_SORTED.length)} із 85</span>
+            <span style="display:flex;align-items:center;gap:0.75rem;">
+              <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i>&nbsp;—&nbsp;молодий&nbsp;вчений</span>
+              <span>Слайд&nbsp;${idx + 1}&nbsp;/&nbsp;${total}</span>
+            </span>
+          </div>
+        `;
+      }
+      // ТЕМАТИЧНІ СЛАЙДИ НАПРЯМІВ (ТОП-10 ПРЕТЕНДЕНТІВ)
       const f = FIELDS[slide.code];
       const allInField = DATA.filter(d => d[3] === slide.code);
       const winners = allInField.filter(d => d[7] === 1).sort((a, b) => b[5] - a[5]);
       const topWinners = winners.slice(0, 10);
       const youngWinCount = winners.filter(d => d[4] === 1).length;
       const pct = allInField.length ? Math.round((winners.length / allInField.length) * 100) : 0;
-
       let winnersHtml = '';
       topWinners.forEach((w, wIdx) => {
         const isYoung = w[4] === 1;
@@ -1421,7 +1869,7 @@
               <div class="slide-name-block">
                 <div class="slide-name-l1">
                   <span>${nameObj.line1}</span>
-                  ${isYoung ? `<span class="young-spark-badge" title="Молодий вчений"><i data-lucide="sparkles" style="width:14px;height:14px;"></i></span>` : ''}
+                  ${isYoung ? `<span class="young-spark-badge" title="Молодий вчений"><i data-lucide="sparkles" style="width:15px;height:15px;"></i></span>` : ''}
                 </div>
                 ${nameObj.line2 ? `<div class="slide-name-l2">${nameObj.line2}</div>` : ''}
               </div>
@@ -1433,7 +1881,6 @@
           </div>
         `;
       });
-
       return `
         <div>
           <div class="slide-header-box">
@@ -1446,23 +1893,26 @@
                 <h2 class="slide-title-compact">${slide.title}</h2>
               </div>
             </div>
-            <div class="slide-header-metrics">
-              <div class="metric-mini">
-                <span class="m-val">${winners.length}</span>
-                <span class="m-lbl">претендентів</span>
+            <div class="slide-header-right-group">
+              <div class="slide-header-metrics">
+                <div class="metric-mini">
+                  <span class="m-val">${winners.length}</span>
+                  <span class="m-lbl">претендентів</span>
+                </div>
+                <div class="metric-mini">
+                  <span class="m-val" style="color:var(--dark-blue);">${allInField.length}</span>
+                  <span class="m-lbl">подано</span>
+                </div>
+                <div class="metric-mini">
+                  <span class="m-val" style="color:var(--gold);">${youngWinCount}</span>
+                  <span class="m-lbl">молодих</span>
+                </div>
+                <div class="metric-mini">
+                  <span class="m-val" style="color:var(--navy);">${pct}%</span>
+                  <span class="m-lbl">успішність</span>
+                </div>
               </div>
-              <div class="metric-mini">
-                <span class="m-val" style="color:var(--dark-blue);">${allInField.length}</span>
-                <span class="m-lbl">подано</span>
-              </div>
-              <div class="metric-mini">
-                <span class="m-val" style="color:var(--gold);">${youngWinCount}</span>
-                <span class="m-lbl">молодих</span>
-              </div>
-              <div class="metric-mini">
-                <span class="m-val" style="color:var(--navy);">${pct}%</span>
-                <span class="m-lbl">успішність</span>
-              </div>
+              ${qrBtnHtml}
             </div>
           </div>
           <div class="slide-remark-bar">
@@ -1484,28 +1934,24 @@
         </div>
       `;
     }
-
     function renderCurrentSlide() {
       const box = document.getElementById('live-slide-box');
       box.innerHTML = renderSlideHtml(SLIDES_CONFIG[currentSlideIdx], currentSlideIdx, SLIDES_CONFIG.length);
       document.getElementById('slide-indicator').innerText = `Слайд ${currentSlideIdx + 1} / ${SLIDES_CONFIG.length}`;
       lucide.createIcons();
     }
-
     function nextSlide() {
       if (currentSlideIdx < SLIDES_CONFIG.length - 1) {
         currentSlideIdx++;
         renderCurrentSlide();
       }
     }
-
     function prevSlide() {
       if (currentSlideIdx > 0) {
         currentSlideIdx--;
         renderCurrentSlide();
       }
     }
-
     function toggleFullScreen() {
       const el = document.getElementById('live-slide-box');
       if (!document.fullscreenElement) {
@@ -1514,7 +1960,6 @@
         document.exitFullscreen();
       }
     }
-
     // ==============================================================
     // БЕЗДОГАННЕ ТА ШВИДКЕ ГЕНЕРУВАННЯ 4:3 PDF БЕЗ ЗСУВУ
     // ==============================================================
@@ -1524,27 +1969,22 @@
       btn.disabled = true;
       btn.innerHTML = '<i data-lucide="loader-2" style="width:16px;height:16px;" class="spin"></i> Створення PDF...';
       if (window.lucide) lucide.createIcons();
-
       const renderZone = document.getElementById('pdf-render-zone');
       renderZone.style.display = 'flex';
-
       try {
         if (document.fonts) {
           await document.fonts.ready;
         }
-
         const JsPDF = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
         if (!JsPDF || !window.html2canvas) {
           throw new Error("Необхідні бібліотеки для PDF не знайдено");
         }
-
         // Пропорції 4:3: 10 x 7.5 дюймів у горизонтальній орієнтації
         const pdf = new JsPDF({
           orientation: 'landscape',
           unit: 'in',
           format: [10, 7.5]
         });
-
         for (let idx = 0; idx < SLIDES_CONFIG.length; idx++) {
           renderZone.innerHTML = `
             <div style="background: rgba(15,23,42,0.9); color: #fff; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.88rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 0.6rem;">
@@ -1556,10 +1996,8 @@
             </div>
           `;
           if (window.lucide) lucide.createIcons();
-
           // Очікування остаточного промальовування елементів у DOM
           await new Promise(r => setTimeout(r, 60));
-
           const slideEl = document.getElementById('pdf-current-slide');
           const canvas = await html2canvas(slideEl, {
             scale: 2,
@@ -1573,15 +2011,15 @@
             scrollX: 0,
             scrollY: 0
           });
-
           const imgData = canvas.toDataURL('image/jpeg', 0.98);
           if (idx > 0) {
             pdf.addPage([10, 7.5], 'landscape');
           }
           pdf.addImage(imgData, 'JPEG', 0, 0, 10, 7.5);
+          // Додаємо клікабельну зону гіперпосилання над QR-кнопкою у правому верхньому кутку
+          pdf.link(9.0, 0.33, 0.58, 0.58, { url: 'https://data.nauka.gov.ua/dashboard-nsd/' });
         }
-
-        pdf.save('KNU_NSD_Presentation_4x3.pdf');
+        pdf.save('KNU_NSD_Full_Presentation_4x3.pdf');
       } catch (err) {
         console.error("Помилка генерації PDF:", err);
         window.print();
@@ -1593,7 +2031,6 @@
         if (window.lucide) lucide.createIcons();
       }
     }
-
     // ==============================================================
     // MODAL & CSV LOGIC
     // ==============================================================
@@ -1603,7 +2040,6 @@
       const [rId, rank, name, fCode, isYoung, score, pct, isWin, statusId] = item;
       const field = FIELDS[fCode];
       const statusTxt = STATUS_MAP[statusId];
-
       document.getElementById('m-name').innerText = name;
       document.getElementById('m-field').innerText = `${fCode}. ${field.name}`;
       document.getElementById('m-score').innerText = score.toFixed(3);
@@ -1611,12 +2047,10 @@
       document.getElementById('m-rank').innerText = `#${rank}`;
       document.getElementById('m-id').innerText = `№ ${rId}`;
       document.getElementById('m-inst').innerText = "Київський національний університет імені Тараса Шевченка";
-
       const badgeSlot = document.getElementById('m-badge');
       badgeSlot.innerHTML = isWin 
         ? `<span class="badge badge-winner" style="font-size:0.8rem;"><i data-lucide="trophy" style="width:14px;height:14px;"></i> Претендент на стипендію</span>`
         : `<span class="badge badge-part" style="font-size:0.8rem;"><i data-lucide="user" style="width:14px;height:14px;"></i> Учасник рейтингу</span>`;
-
       const alertBox = document.getElementById('m-alert-box');
       if (statusTxt) {
         document.getElementById('m-alert-txt').innerText = statusTxt;
@@ -1624,28 +2058,23 @@
       } else {
         alertBox.style.display = 'none';
       }
-
       document.getElementById('researcher-modal').style.display = 'flex';
       lucide.createIcons();
     }
-
     function closeModalDirect() {
       document.getElementById('researcher-modal').style.display = 'none';
     }
-
     function closeModal(e) {
       if (e.target.id === 'researcher-modal') {
         closeModalDirect();
       }
     }
-
     function exportCSV() {
       let csv = 'ID;Місце;ПІБ;Напрям;Категорія;Бал;Відсоток;Претендент;Зауваження\n';
       DATA.forEach(d => {
         const [id, rank, name, fCode, isYoung, score, pct, isWin, statusId] = d;
         csv += `${id};"${rank}";"${name}";"${fCode}. ${FIELDS[fCode].name}";"${isYoung ? 'Молодий вчений' : 'Загальний'}";${score};${pct}%;"${isWin ? 'Претендент' : 'Учасник'}";"${STATUS_MAP[statusId]}"\n`;
       });
-
       const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
