@@ -131,8 +131,13 @@
     #view-presentation { display: block; }
     #view-dashboard { display: none; }
     .pres-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem; background: var(--white); padding: 0.85rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--gray-200); box-shadow: var(--shadow); }
-    .pres-nav-grp { display: flex; align-items: center; gap: 0.75rem; }
-    .pres-counter { font-weight: 700; font-size: 0.9rem; color: var(--dark-blue); min-width: 100px; text-align: center; }
+    .pres-nav-grp { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .pres-counter { font-weight: 700; font-size: 0.9rem; color: var(--dark-blue); min-width: 105px; text-align: center; }
+    /* MODE SWITCHER BUTTONS */
+    .pres-mode-wrap { display: flex; align-items: center; gap: 0.45rem; background: var(--gray-50); border: 1px solid var(--gray-200); padding: 3px 5px; border-radius: 9px; }
+    .btn-mode { padding: 0.4rem 0.75rem; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: none; background: transparent; color: var(--gray-600); cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.15s ease; }
+    .btn-mode:hover { background: var(--white); color: var(--black); }
+    .btn-mode.active { background: var(--dark-blue); color: var(--white); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
     /* 4:3 Slide Frame on Screen */
     .pres-viewport { display: flex; justify-content: center; align-items: center; margin-bottom: 2rem; }
     .slide-4x3 {
@@ -151,8 +156,8 @@
       position: relative;
       overflow: hidden;
       box-sizing: border-box;
-      letter-spacing: 0;
-      word-spacing: 0;
+      letter-spacing: normal;
+      word-spacing: normal;
     }
     .slide-4x3::before {
       content: "";
@@ -269,7 +274,8 @@
       line-height: 1.35;
       margin-top: 0.6rem;
       margin-bottom: 0.35rem;
-      word-spacing: 0.05em;
+      letter-spacing: normal;
+      word-spacing: normal;
     }
     .slide-remark-bar i {
       color: var(--knu-red);
@@ -444,7 +450,7 @@
       white-space: nowrap;
     }
     /* ==============================================================
-       CONCLUSION / RECOMMENDATIONS SLIDE STYLES (ENLARGED, READABLE)
+       CONCLUSION / RECOMMENDATIONS SLIDE STYLES (LARGE, READABLE)
        ============================================================== */
     .conclusion-card {
       background: var(--gray-50);
@@ -464,6 +470,8 @@
       font-size: 1.22rem;
       color: var(--black);
       line-height: 1.3;
+      letter-spacing: normal;
+      word-spacing: normal;
     }
     .conclusion-desc {
       font-size: 1.04rem;
@@ -472,12 +480,15 @@
       line-height: 1.5;
       white-space: normal;
       word-wrap: break-word;
+      letter-spacing: normal;
+      word-spacing: normal;
     }
     /* 2-Column Winners Grid */
     .slide-winners-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 0.5rem 0.85rem;
+      align-content: start;
     }
     .slide-winner-card {
       background: var(--gray-50);
@@ -501,7 +512,7 @@
       font-size: 0.82rem;
       font-weight: 800;
       color: var(--gray-400);
-      min-width: 22px;
+      min-width: 26px;
       flex-shrink: 0;
     }
     /* 2-Line Name Block */
@@ -691,8 +702,8 @@
       overflow: hidden;
       margin: 0;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      letter-spacing: 0;
-      word-spacing: 0;
+      letter-spacing: normal;
+      word-spacing: normal;
     }
     .pdf-slide-page::before {
       content: "";
@@ -905,6 +916,15 @@
           <span class="pres-counter" id="slide-indicator">Слайд 1 / 14</span>
           <button class="btn btn-secondary" onclick="nextSlide()">
             Наступний <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+        <!-- SLIDE MODE SWITCHER (Top-10 vs All pretenders) -->
+        <div class="pres-mode-wrap">
+          <button id="btn-mode-top10" class="btn-mode active" onclick="setPresMode('top10')" title="Показувати до 10 претендентів на кожен напрям (14 слайдів)">
+            <i data-lucide="list-ordered" style="width:14px;height:14px;"></i> Топ-10 напрямів
+          </button>
+          <button id="btn-mode-all" class="btn-mode" onclick="setPresMode('all')" title="Показувати абсолютно всіх претендентів напряму без обмежень (18 слайдів)">
+            <i data-lucide="users" style="width:14px;height:14px;"></i> Усі претенденти (10+8...)
           </button>
         </div>
         <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -1240,8 +1260,9 @@
     ];
     // Повний масив ЛИШЕ 85 ПЕРЕМОЖЦІВ (ПРЕТЕНДЕНТІВ), відсортований за спаданням балу НСД
     const WINNERS_ONLY_SORTED = DATA.filter(d => d[7] === 1).sort((a, b) => b[5] - a[5]);
-    // Стан інтерфейсу: за замовчуванням відкриваємо презентацію 4:3
+    // Стан інтерфейсу
     let currentMainView = 'presentation';
+    let currentPresMode = 'top10'; // 'top10' (14 слайдів) або 'all' (18 слайдів)
     let currentMode = 'pretenders';
     let selectedField = 'all';
     let searchQuery = '';
@@ -1250,6 +1271,149 @@
     // Стан слайдів презентації
     let currentSlideIdx = 0;
     let QR_CODE_DATA_URL = '';
+    // Генерація структури слайдів відповідно до режиму
+    function getSlidesConfig(mode) {
+      const slides = [
+        // СЛАЙД 1: КАРТА ВСІХ НАПРЯМІВ
+        {
+          type: "fields_map",
+          tag: "Загальне порівняння • 9 напрямів науки",
+          icon: "bar-chart-3",
+          title: "Порівняльна результативність<br>та ефективність напрямів у КНУ"
+        }
+      ];
+      const fieldMeta = [
+        { code: "14", place: "1 місце", icon: "trophy", remark: "Абсолютний лідер КНУ за кількістю стипендіатів (20) та молодих вчених (11)" },
+        { code: "04", place: "2 місце", icon: "zap", remark: "Найвищі індивідуальні бали серед науковців усього університету (до 13.808 балів)" },
+        { code: "06", place: "3 місце", icon: "target", remark: "Найвищий відсоток успішності серед природничих факультетів КНУ (56.5%)" },
+        { code: "03", place: "4 місце", icon: "microscope", remark: "Наймасовіший напрям за загальною кількістю поданих заявок (45 подань)" },
+        { code: "02", place: "5 місце", icon: "star", remark: "Абсолютний лідер напряму в усій Україні (#1) — О. В. Капустян (100.0%)" },
+        { code: "13", place: "6 місце", icon: "trending-up", remark: "Найвища конкуренція провідних наукових шкіл (результати до 85.9% від лідера)" },
+        { code: "12", place: "7 місце", icon: "sparkles", remark: "Висока частка молодих переможців напряму — 4 із 6 претендентів (67%)" },
+        { code: "07", place: "8 місце", icon: "lightbulb", remark: "100% результативність молодих науковців напряму (2 з 2 претенденти)" }
+      ];
+      if (mode === 'all') {
+        // У повному режимі напрями з >10 претендентами розбиваються на 2 слайди (10 + решта)
+        fieldMeta.forEach(fm => {
+          const allInField = DATA.filter(d => d[3] === fm.code);
+          const winners = allInField.filter(d => d[7] === 1);
+          if (winners.length > 10) {
+            slides.push({
+              code: fm.code,
+              tag: `${fm.place} • ${winners.length} претендентів (Частина 1/2)`,
+              icon: fm.icon,
+              title: `${fm.code}. ${FIELDS[fm.code].name}`,
+              remark: fm.remark,
+              startIdx: 0,
+              endIdx: 10,
+              partNum: 1,
+              totalParts: 2
+            });
+            slides.push({
+              code: fm.code,
+              tag: `${fm.place} • ${winners.length} претендентів (Частина 2/2)`,
+              icon: fm.icon,
+              title: `${fm.code}. ${FIELDS[fm.code].name}`,
+              remark: fm.remark,
+              startIdx: 10,
+              endIdx: winners.length,
+              partNum: 2,
+              totalParts: 2
+            });
+          } else {
+            slides.push({
+              code: fm.code,
+              tag: `${fm.place} • ${winners.length} претендентів`,
+              icon: fm.icon,
+              title: `${fm.code}. ${FIELDS[fm.code].name}`,
+              remark: fm.remark,
+              startIdx: 0,
+              endIdx: winners.length,
+              partNum: 1,
+              totalParts: 1
+            });
+          }
+        });
+      } else {
+        // У режимі Топ-10 рівно 1 слайд на напрям (до 10 претендентів)
+        fieldMeta.forEach(fm => {
+          const allInField = DATA.filter(d => d[3] === fm.code);
+          const winners = allInField.filter(d => d[7] === 1);
+          slides.push({
+            code: fm.code,
+            tag: `${fm.place} • ${winners.length} претендентів`,
+            icon: fm.icon,
+            title: `${fm.code}. ${FIELDS[fm.code].name}`,
+            remark: fm.remark,
+            startIdx: 0,
+            endIdx: 10,
+            partNum: 1,
+            totalParts: 1
+          });
+        });
+      }
+      // Слайд підсумків та рекомендацій
+      slides.push({
+        type: "conclusion",
+        tag: "Висновки для керівництва",
+        icon: "check-circle-2",
+        title: "Підсумкова аналітика конкурсу<br>та пріоритети наукового розвитку",
+        remark: "Пріоритетні висновки для науково-дослідної частини та ректорату"
+      });
+      // 4 слайди реєстру 85 стипендіатів КНУ
+      slides.push(
+        {
+          type: "winners_list",
+          startIdx: 0,
+          endIdx: 22,
+          tag: "Реєстр стипендіатів • Частина 1/4",
+          icon: "trophy",
+          title: "Повний список стипендіатів КНУ<br>(Позиції 1–22 із 85 претендентів)",
+          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+        },
+        {
+          type: "winners_list",
+          startIdx: 22,
+          endIdx: 44,
+          tag: "Реєстр стипендіатів • Частина 2/4",
+          icon: "trophy",
+          title: "Повний список стипендіатів КНУ<br>(Позиції 23–44 із 85 претендентів)",
+          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+        },
+        {
+          type: "winners_list",
+          startIdx: 44,
+          endIdx: 66,
+          tag: "Реєстр стипендіатів • Частина 3/4",
+          icon: "trophy",
+          title: "Повний список стипендіатів КНУ<br>(Позиції 45–66 із 85 претендентів)",
+          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+        },
+        {
+          type: "winners_list",
+          startIdx: 66,
+          endIdx: 85,
+          tag: "Реєстр стипендіатів • Частина 4/4",
+          icon: "trophy",
+          title: "Повний список стипендіатів КНУ<br>(Позиції 67–85 із 85 претендентів)",
+          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+        }
+      );
+      return slides;
+    }
+    let currentSlidesConfig = getSlidesConfig(currentPresMode);
+    // Перемикання режиму слайдів (Топ-10 або Усі)
+    function setPresMode(mode) {
+      currentPresMode = mode;
+      document.getElementById('btn-mode-top10').classList.toggle('active', mode === 'top10');
+      document.getElementById('btn-mode-all').classList.toggle('active', mode === 'all');
+      currentSlidesConfig = getSlidesConfig(mode);
+      if (currentSlideIdx >= currentSlidesConfig.length) {
+        currentSlideIdx = currentSlidesConfig.length - 1;
+      }
+      renderCurrentSlide();
+      if (window.lucide) lucide.createIcons();
+    }
     // Генерація QR-коду на дашборд
     function initQRCode() {
       try {
@@ -1287,10 +1451,10 @@
       if (parts.length <= 1) return { line1: fullName, line2: '' };
       return {
         line1: parts[0],
-        line2: parts.slice(1).join('\u00A0')
+        line2: parts.slice(1).join(' ')
       };
     }
-    // Скорочений формат ПІБ (Прізвище + Ініціали з нерозривним пробілом)
+    // Скорочений формат ПІБ (Прізвище + Ініціали)
     function formatSurnameInitials(fullName) {
       const parts = fullName.trim().split(/\s+/);
       if (parts.length <= 1) return fullName;
@@ -1300,8 +1464,8 @@
           return p.split('-').filter(Boolean).map(sub => sub[0].toUpperCase() + '.').join('-');
         }
         return p ? p[0].toUpperCase() + '.' : '';
-      }).join('\u00A0');
-      return `${surname}\u00A0${initials}`;
+      }).join(' ');
+      return `${surname} ${initials}`;
     }
     // Ініціалізація
     window.addEventListener('DOMContentLoaded', () => {
@@ -1506,122 +1670,12 @@
       lucide.createIcons();
     }
     // ==============================================================
-    // 4:3 PRESENTATION SLIDES CONFIGURATION (14 SLIDES TOTAL)
+    // RENDER SLIDE HTML (TOP-10 АБО ALL ПРЕТЕНДЕНТІВ)
     // ==============================================================
-    const SLIDES_CONFIG = [
-      // СЛАЙД 1: КАРТА ВСІХ 9 НАУКОВИХ НАПРЯМІВ ЗІ СМУГАМИ ЕФЕКТИВНОСТІ (БЕЗ НУМЕРАЦІЇ В КУТКУ)
-      {
-        type: "fields_map",
-        tag: "Загальне порівняння • 9 напрямів науки",
-        icon: "bar-chart-3",
-        title: "Порівняльна результативність<br>та ефективність напрямів у КНУ"
-      },
-      // 8 СЛАЙДІВ НАПРЯМІВ (НУМЕРАЦІЯ 1/8 – 8/8)
-      {
-        code: "14",
-        tag: "1 місце • 20 претендентів",
-        icon: "trophy",
-        title: "14. Гуманітарні науки<br>і мистецтво",
-        remark: "Абсолютний лідер університету за кількістю стипендіатів (20) та молодих вчених (11)"
-      },
-      {
-        code: "04",
-        tag: "2 місце • 18 претендентів",
-        icon: "zap",
-        title: "04. Хімія, хімічні технології<br>та фармація",
-        remark: "Найвищі індивідуальні бали серед науковців усього університету (до 13.808 балів)"
-      },
-      {
-        code: "06",
-        tag: "3 місце • 13 претендентів",
-        icon: "target",
-        title: "06. Біологія, медицина<br>та реабілітація",
-        remark: "Найвищий відсоток успішності серед природничих факультетів КНУ (56.5%)"
-      },
-      {
-        code: "03",
-        tag: "4 місце • 11 претендентів",
-        icon: "microscope",
-        title: "03. Фізика, ядерна фізика<br>та астрономія",
-        remark: "Наймасовіший напрям за загальною кількістю поданих заявок (45 подань)"
-      },
-      {
-        code: "02",
-        tag: "5 місце • 6 претендентів",
-        icon: "star",
-        title: "02. Математика<br>та статистика",
-        remark: "Абсолютний лідер напряму в усій Україні (#1) — О. В. Капустян (100.0%)"
-      },
-      {
-        code: "13",
-        tag: "6 місце • 6 претендентів",
-        icon: "trending-up",
-        title: "13. Економіка, бізнес,<br>адміністрування та право",
-        remark: "Найвища конкуренція провідних наукових шкіл (результати до 85.9% від лідера)"
-      },
-      {
-        code: "12",
-        tag: "7 місце • 6 претендентів",
-        icon: "sparkles",
-        title: "12. Соціальні науки, журналістика<br>та розвиток людського капіталу",
-        remark: "Висока частка молодих переможців напряму — 4 із 6 претендентів (67%)"
-      },
-      {
-        code: "07",
-        tag: "8 місце • 5 претендентів",
-        icon: "lightbulb",
-        title: "07. Інформаційні технології<br>та електроніка",
-        remark: "100% результативність молодих науковців напряму (2 з 2 претенденти)"
-      },
-      // СЛАЙД 10: ПІДСУМКИ (БЕЗ НУМЕРАЦІЇ В КУТКУ, ЗБІЛЬШЕНИЙ ЧІТКИЙ ТЕКСТ)
-      {
-        type: "conclusion",
-        tag: "Висновки для керівництва",
-        icon: "check-circle-2",
-        title: "Підсумкова аналітика конкурсу<br>та пріоритети наукового розвитку",
-        remark: "Пріоритетні висновки для науково-дослідної частини та ректорату"
-      },
-      // 4 СЛАЙДИ РЕЄСТРУ 85 СТИПЕНДІАТІВ КНУ (НУМЕРАЦІЯ 1/4 – 4/4)
-      {
-        type: "winners_list",
-        startIdx: 0,
-        endIdx: 22,
-        tag: "Реєстр стипендіатів • Частина 1/4",
-        icon: "trophy",
-        title: "Повний список стипендіатів КНУ<br>(Позиції 1–22 із 85 претендентів)",
-        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
-      },
-      {
-        type: "winners_list",
-        startIdx: 22,
-        endIdx: 44,
-        tag: "Реєстр стипендіатів • Частина 2/4",
-        icon: "trophy",
-        title: "Повний список стипендіатів КНУ<br>(Позиції 23–44 із 85 претендентів)",
-        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
-      },
-      {
-        type: "winners_list",
-        startIdx: 44,
-        endIdx: 66,
-        tag: "Реєстр стипендіатів • Частина 3/4",
-        icon: "trophy",
-        title: "Повний список стипендіатів КНУ<br>(Позиції 45–66 із 85 претендентів)",
-        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
-      },
-      {
-        type: "winners_list",
-        startIdx: 66,
-        endIdx: 85,
-        tag: "Реєстр стипендіатів • Частина 4/4",
-        icon: "trophy",
-        title: "Повний список стипендіатів КНУ<br>(Позиції 67–85 із 85 претендентів)",
-        remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
-      }
-    ];
     function renderSlideHtml(slide, idx, total) {
       const qrBtnHtml = getQRButtonHtml();
-      // СЛАЙД 1: КАРТА ВСІХ НАПРЯМІВ ЗІ СМУГАМИ ЕФЕКТИВНОСТІ (ЗБІЛЬШЕНИЙ ШРИФТ В 1 РЯДОК)
+      const numFieldSlides = (currentPresMode === 'all') ? 12 : 8;
+      // СЛАЙД 1: КАРТА ВСІХ НАПРЯМІВ ЗІ СМУГАМИ ЕФЕКТИВНОСТІ (БЕЗ НУМЕРАЦІЇ В КУТКУ)
       if (slide.type === "fields_map") {
         let rowsHtml = '';
         SORTED_FIELD_CODES.forEach(code => {
@@ -1648,9 +1702,9 @@
                 <span class="fm-pct-lbl" style="color:${pct > 0 ? f.color : 'var(--gray-400)'};">${pct.toFixed(1)}%</span>
               </div>
               <div class="fm-right">
-                <span class="fm-badge-win" title="Претенденти">${winInField.length}&nbsp;прет.</span>
-                <span class="fm-badge-total" title="Подано заявок">${allInField.length}&nbsp;под.</span>
-                <span class="fm-badge-young" title="Молоді вчені-переможці">${youngWinInField.length}&nbsp;мол.</span>
+                <span class="fm-badge-win" title="Претенденти">${winInField.length} прет.</span>
+                <span class="fm-badge-total" title="Подано заявок">${allInField.length} под.</span>
+                <span class="fm-badge-young" title="Молоді вчені-переможці">${youngWinInField.length} мол.</span>
               </div>
             </div>
           `;
@@ -1663,7 +1717,7 @@
                   <i data-lucide="bar-chart-3"></i>
                 </div>
                 <div>
-                  <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
+                  <span class="slide-tag">${slide.tag}</span>
                   <h2 class="slide-title-compact">${slide.title}</h2>
                 </div>
               </div>
@@ -1697,7 +1751,7 @@
           </div>
         `;
       }
-      // СЛАЙД 10: ПІДСУМКОВА АНАЛІТИКА (ЗБІЛЬШЕНИЙ ЧІТКИЙ ШРИФТ, БЕЗ ОБРІЗАННЯ)
+      // СЛАЙД ВИСНОВКІВ (РЕКОМЕНДАЦІЇ): РОЗДІЛЬНІ ПРОБІЛИ, ЧІТКЕ ФОРМАТУВАННЯ
       if (slide.type === "conclusion") {
         return `
           <div>
@@ -1723,14 +1777,14 @@
           <div class="slide-body">
             <div style="display:flex;flex-direction:column;gap:0.85rem;margin-top:0.25rem;">
               <div class="conclusion-card">
-                <div class="conclusion-title">4 ключові напрями дають 73% стипендіатів</div>
+                <div class="conclusion-title">4 ключові напрями забезпечують 73% стипендіатів</div>
                 <div class="conclusion-desc">
                   Гуманітарні науки (20), Хімія (18), Біологія (13) та Фізика (11)<br>
                   сукупно забезпечують 62 із 85 стипендіатів КНУ імені Тараса Шевченка.
                 </div>
               </div>
               <div class="conclusion-card conclusion-gold">
-                <div class="conclusion-title">Висока результативність молодих науковців</div>
+                <div class="conclusion-title">Висока результативність молодих науковців університету</div>
                 <div class="conclusion-desc">
                   34 молодих вчених визнано претендентами на отримання стипендії НСД<br>
                   (52.3% успішність — значно вище за середній рівень участі по ЗВО України).
@@ -1765,7 +1819,7 @@
           return `
             <div class="all-names-row">
               <div class="an-left">
-                <span class="an-rank" title="Місце в Україні / Місце в КНУ">${origRank}&nbsp;/&nbsp;${overallRank}</span>
+                <span class="an-rank" title="Місце в Україні / Місце в КНУ">${origRank} / ${overallRank}</span>
                 <span class="an-name" title="${name}">
                   ${shortName}
                   ${isYoung ? '<span class="young-spark-badge" title="Молодий вчений"><i data-lucide="sparkles" style="width:13px;height:13px;"></i></span>' : ''}
@@ -1780,7 +1834,7 @@
             </div>
           `;
         };
-        const topicIdx = idx - 9; // 1, 2, 3, 4
+        const topicIdx = idx - (numFieldSlides + 1); // 1, 2, 3, 4
         return `
           <div>
             <div class="slide-header-box">
@@ -1789,7 +1843,7 @@
                   <i data-lucide="trophy"></i>
                 </div>
                 <div>
-                  <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
+                  <span class="slide-tag">${slide.tag}</span>
                   <h2 class="slide-title-compact">${slide.title}</h2>
                 </div>
               </div>
@@ -1809,7 +1863,7 @@
             </div>
             <div class="slide-remark-bar">
               <i data-lucide="award"></i>
-              <span>${slide.remark.replace(/ /g, '&nbsp;')}</span>
+              <span>${slide.remark}</span>
             </div>
           </div>
           <div class="slide-body">
@@ -1825,27 +1879,30 @@
           <div class="slide-footer-compact">
             <span><strong style="color:var(--knu-red)">№ НСД / № КНУ</strong> — місце в Україні / місце в КНУ • Позиції ${slide.startIdx + 1}–${Math.min(slide.endIdx, WINNERS_ONLY_SORTED.length)} із 85</span>
             <span style="display:flex;align-items:center;gap:0.75rem;">
-              <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i>&nbsp;—&nbsp;молодий&nbsp;вчений</span>
-              <span>${topicIdx}&nbsp;/&nbsp;4</span>
+              <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i> — молодий вчений</span>
+              <span>${topicIdx} / 4</span>
             </span>
           </div>
         `;
       }
-      // ТЕМАТИЧНІ СЛАЙДИ НАПРЯМІВ (НУМЕРАЦІЯ 1/8 – 8/8)
+      // ТЕМАТИЧНІ СЛАЙДИ НАПРЯМІВ (АДАПТИВНІ ДО ТОП-10 АБО ЧАСТИН 10+8...)
       const f = FIELDS[slide.code];
       const allInField = DATA.filter(d => d[3] === slide.code);
       const winners = allInField.filter(d => d[7] === 1).sort((a, b) => b[5] - a[5]);
-      const topWinners = winners.slice(0, 10);
+      const start = slide.startIdx || 0;
+      const end = slide.endIdx || 10;
+      const sliceWinners = winners.slice(start, end);
       const youngWinCount = winners.filter(d => d[4] === 1).length;
       const pct = allInField.length ? Math.round((winners.length / allInField.length) * 100) : 0;
       let winnersHtml = '';
-      topWinners.forEach((w, wIdx) => {
+      sliceWinners.forEach((w, wIdx) => {
+        const globalIdx = start + wIdx + 1;
         const isYoung = w[4] === 1;
         const nameObj = formatName2Lines(w[2]);
         winnersHtml += `
           <div class="slide-winner-card">
             <div class="slide-winner-left">
-              <span class="slide-winner-idx">#${wIdx + 1}</span>
+              <span class="slide-winner-idx">#${globalIdx}</span>
               <div class="slide-name-block">
                 <div class="slide-name-l1">
                   <span>${nameObj.line1}</span>
@@ -1861,6 +1918,14 @@
           </div>
         `;
       });
+      let footerRangeTxt = '';
+      if (slide.totalParts && slide.totalParts > 1) {
+        footerRangeTxt = `Позиції ${start + 1}–${Math.min(end, winners.length)} із ${winners.length} претендентів напряму (Частина ${slide.partNum}/${slide.totalParts})`;
+      } else if (winners.length > 10) {
+        footerRangeTxt = `Топ-10 за балом НСД (усього в списку: ${winners.length})`;
+      } else {
+        footerRangeTxt = `Усі ${winners.length} претендентів напряму`;
+      }
       return `
         <div>
           <div class="slide-header-box">
@@ -1869,7 +1934,7 @@
                 <i data-lucide="${f.icon}"></i>
               </div>
               <div>
-                <span class="slide-tag">${slide.tag.replace(/ /g, '&nbsp;')}</span>
+                <span class="slide-tag">${slide.tag}</span>
                 <h2 class="slide-title-compact">${slide.title}</h2>
               </div>
             </div>
@@ -1897,7 +1962,7 @@
           </div>
           <div class="slide-remark-bar">
             <i data-lucide="${slide.icon || f.icon}"></i>
-            <span>${slide.remark.replace(/ /g, '&nbsp;')}</span>
+            <span>${slide.remark}</span>
           </div>
         </div>
         <div class="slide-body">
@@ -1906,22 +1971,22 @@
           </div>
         </div>
         <div class="slide-footer-compact">
-          <span>${(winners.length > 10 ? 'Топ-10 за балом НСД (усього в списку: ' + winners.length + ')' : 'Усі ' + winners.length + ' претендентів напряму').replace(/ /g, '&nbsp;')}</span>
+          <span>${footerRangeTxt}</span>
           <span style="display:flex;align-items:center;gap:0.75rem;">
-            <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i>&nbsp;—&nbsp;молодий&nbsp;вчений</span>
-            <span>${idx}&nbsp;/&nbsp;8</span>
+            <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i> — молодий вчений</span>
+            <span>${idx} / ${numFieldSlides}</span>
           </span>
         </div>
       `;
     }
     function renderCurrentSlide() {
       const box = document.getElementById('live-slide-box');
-      box.innerHTML = renderSlideHtml(SLIDES_CONFIG[currentSlideIdx], currentSlideIdx, SLIDES_CONFIG.length);
-      document.getElementById('slide-indicator').innerText = `Слайд ${currentSlideIdx + 1} / ${SLIDES_CONFIG.length}`;
+      box.innerHTML = renderSlideHtml(currentSlidesConfig[currentSlideIdx], currentSlideIdx, currentSlidesConfig.length);
+      document.getElementById('slide-indicator').innerText = `Слайд ${currentSlideIdx + 1} / ${currentSlidesConfig.length}`;
       lucide.createIcons();
     }
     function nextSlide() {
-      if (currentSlideIdx < SLIDES_CONFIG.length - 1) {
+      if (currentSlideIdx < currentSlidesConfig.length - 1) {
         currentSlideIdx++;
         renderCurrentSlide();
       }
@@ -1965,14 +2030,14 @@
           unit: 'in',
           format: [10, 7.5]
         });
-        for (let idx = 0; idx < SLIDES_CONFIG.length; idx++) {
+        for (let idx = 0; idx < currentSlidesConfig.length; idx++) {
           renderZone.innerHTML = `
             <div style="background: rgba(15,23,42,0.9); color: #fff; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.88rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 0.6rem;">
               <i data-lucide="loader-2" style="width:18px;height:18px;" class="spin"></i>
-              <span>Генерація презентації: слайд ${idx + 1} із ${SLIDES_CONFIG.length}...</span>
+              <span>Генерація презентації: слайд ${idx + 1} із ${currentSlidesConfig.length}...</span>
             </div>
             <div class="pdf-slide-page" id="pdf-current-slide">
-              ${renderSlideHtml(SLIDES_CONFIG[idx], idx, SLIDES_CONFIG.length)}
+              ${renderSlideHtml(currentSlidesConfig[idx], idx, currentSlidesConfig.length)}
             </div>
           `;
           if (window.lucide) lucide.createIcons();
@@ -1997,7 +2062,10 @@
           pdf.addImage(imgData, 'JPEG', 0, 0, 10, 7.5);
           pdf.link(8.95, 0.32, 0.6, 0.6, { url: 'https://data.nauka.gov.ua/dashboard-nsd/' });
         }
-        pdf.save('KNU_NSD_Full_Presentation_4x3.pdf');
+        const fileName = (currentPresMode === 'all') 
+          ? 'KNU_NSD_Full_All_Pretenders_4x3.pdf' 
+          : 'KNU_NSD_Presentation_Top10_4x3.pdf';
+        pdf.save(fileName);
       } catch (err) {
         console.error("Помилка генерації PDF:", err);
         window.print();
