@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>КНУ імені Тараса Шевченка | Аналітика рейтингу НСД України</title>
+  <title>КНУ імені Тараса Шевченка | Аналітика рейтингу НСДУ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -746,7 +746,7 @@
         <div class="brand-txt">
           <h1>Київський національний університет імені Тараса Шевченка</h1>
           <p>
-            <span>Національна система дослідників України (НСД)</span>
+            <span>Національна система дослідників України (НСДУ)</span>
             <span>•</span>
             <span class="hi">Зведена аналітика участі університету</span>
           </p>
@@ -755,7 +755,7 @@
       <div class="header-actions">
         <a href="https://data.nauka.gov.ua/dashboard-nsd/" target="_blank" rel="noopener noreferrer" class="btn btn-portal">
           <i data-lucide="external-link" style="width:15px;height:15px;"></i>
-          <span>Оригінальний дашборд НСД</span>
+          <span>Оригінальний дашборд НСДУ</span>
         </a>
       </div>
     </div>
@@ -896,7 +896,7 @@
                 <th>ПІБ / Заявка</th>
                 <th>Напрям науки</th>
                 <th>Категорія</th>
-                <th>Бал НСД</th>
+                <th>Бал НСДУ</th>
                 <th>% від лідера</th>
                 <th>Місце в країні</th>
                 <th>Зауваження</th>
@@ -987,7 +987,7 @@
   <footer>
     <div class="footer-cnt">
       <div><strong>Київський національний університет імені Тараса Шевченка</strong> • Науково-дослідна частина</div>
-      <div>Офіційні дані рейтингу НСД України МОН • Загалом 234 подання / 85 переможців</div>
+      <div>Офіційні дані рейтингу НСДУ • Загалом 234 подання / 85 переможців</div>
     </div>
   </footer>
   <script>
@@ -1356,10 +1356,10 @@
       // Слайд підсумків та рекомендацій
       slides.push({
         type: "conclusion",
-        tag: "Висновки для керівництва",
+        tag: "Висновки",
         icon: "check-circle-2",
-        title: "Підсумкова аналітика конкурсу<br>та пріоритети наукового розвитку",
-        remark: "Пріоритетні висновки для науково-дослідної частини та ректорату"
+        title: "Проміжна аналітика<br>конкурсу НСДУ 2026",
+        remark: "Пріоритетні висновки"
       });
       // 4 слайди реєстру 85 стипендіатів КНУ
       slides.push(
@@ -1370,7 +1370,7 @@
           tag: "Реєстр стипендіатів • Частина 1/4",
           icon: "trophy",
           title: "Повний список стипендіатів КНУ<br>(Позиції 1–22 із 85 претендентів)",
-          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+          remark: "Усі 85 переможців конкурсу НСДУ університету за спаданням підсумкового балу"
         },
         {
           type: "winners_list",
@@ -1379,7 +1379,7 @@
           tag: "Реєстр стипендіатів • Частина 2/4",
           icon: "trophy",
           title: "Повний список стипендіатів КНУ<br>(Позиції 23–44 із 85 претендентів)",
-          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+          remark: "Усі 85 переможців конкурсу НСДУ університету за спаданням підсумкового балу"
         },
         {
           type: "winners_list",
@@ -1388,7 +1388,7 @@
           tag: "Реєстр стипендіатів • Частина 3/4",
           icon: "trophy",
           title: "Повний список стипендіатів КНУ<br>(Позиції 45–66 із 85 претендентів)",
-          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+          remark: "Усі 85 переможців конкурсу НСДУ університету за спаданням підсумкового балу"
         },
         {
           type: "winners_list",
@@ -1397,7 +1397,7 @@
           tag: "Реєстр стипендіатів • Частина 4/4",
           icon: "trophy",
           title: "Повний список стипендіатів КНУ<br>(Позиції 67–85 із 85 претендентів)",
-          remark: "Усі 85 переможців конкурсу НСД університету за спаданням підсумкового балу"
+          remark: "Усі 85 переможців конкурсу НСДУ університету за спаданням підсумкового балу"
         }
       );
       return slides;
@@ -1438,10 +1438,10 @@
     // Чиста клікабельна QR-кнопка БЕЗ ТЕКСТУ
     function getQRButtonHtml() {
       const qrInner = QR_CODE_DATA_URL 
-        ? `<img src="${QR_CODE_DATA_URL}" class="slide-qr-img" alt="QR-код НСД" />`
+        ? `<img src="${QR_CODE_DATA_URL}" class="slide-qr-img" alt="QR-код НСДУ" />`
         : `<i data-lucide="qr-code" style="width:36px;height:36px;color:var(--dark-blue);"></i>`;
       return `
-        <a href="https://data.nauka.gov.ua/dashboard-nsd/" target="_blank" rel="noopener noreferrer" class="slide-qr-btn" title="Оригінальний дашборд НСД МОН України (data.nauka.gov.ua/dashboard-nsd/)">
+        <a href="https://data.nauka.gov.ua/dashboard-nsd/" target="_blank" rel="noopener noreferrer" class="slide-qr-btn" title="Оригінальний дашборд НСДУ (data.nauka.gov.ua/dashboard-nsd/)">
           ${qrInner}
         </a>
       `;
@@ -1778,16 +1778,16 @@
           <div class="slide-body">
             <div style="display:flex;flex-direction:column;gap:0.85rem;margin-top:0.25rem;">
               <div class="conclusion-card">
-                <div class="conclusion-title">4 ключові напрями забезпечують 73% стипендіатів</div>
+                <div class="conclusion-title">За 4 науковими напрямами сформовано<br>3/4 від загальної чисельності університетських претендентів</div>
                 <div class="conclusion-desc">
-                  Гуманітарні науки (20), Хімія (18), Біологія (13) та Фізика (11)<br>
-                  сукупно забезпечують 62 із 85 стипендіатів КНУ імені Тараса Шевченка.
+                  Гуманітарні науки і мистецтво (20), Хімія, хімічні технології та фармація  (18), Біологія, медицина та реабілітація (13) та Фізика, ядерна фізика та астрономія (11)
+                  у сукупності забезпечують 62 із 85 стипендіатів КНУ імені Тараса Шевченка.
                 </div>
               </div>
               <div class="conclusion-card conclusion-gold">
                 <div class="conclusion-title">Висока результативність молодих науковців університету</div>
                 <div class="conclusion-desc">
-                  34 молодих вчених визнано претендентами на отримання стипендії НСД<br>
+                  34 молодих вчених визнано претендентами на отримання стипендії НСДУ<br>
                   (52.3% успішність — значно вище за середній рівень участі по ЗВО України).
                 </div>
               </div>
@@ -1801,7 +1801,7 @@
             </div>
           </div>
           <div class="slide-footer-compact">
-            <span>Аналітичні висновки для Науково-дослідної частини</span>
+            <span>Аналітичні висновки</span>
             <span></span>
           </div>
         `;
@@ -1878,7 +1878,7 @@
             </div>
           </div>
           <div class="slide-footer-compact">
-            <span><strong style="color:var(--knu-red)">№ НСД / № КНУ</strong> — місце в Україні / місце в КНУ • Позиції ${slide.startIdx + 1}–${Math.min(slide.endIdx, WINNERS_ONLY_SORTED.length)} із 85</span>
+            <span><strong style="color:var(--knu-red)">№ НСДУ / № КНУ</strong> — місце в Україні / місце в КНУ • Позиції ${slide.startIdx + 1}–${Math.min(slide.endIdx, WINNERS_ONLY_SORTED.length)} із 85</span>
             <span style="display:flex;align-items:center;gap:0.75rem;">
               <span class="footer-legend"><i data-lucide="sparkles" style="width:12px;height:12px;color:var(--gold);"></i> — молодий вчений</span>
               <span>${topicIdx} / 4</span>
@@ -1903,7 +1903,7 @@
         winnersHtml += `
           <div class="slide-winner-card">
             <div class="slide-winner-left">
-              <span class="slide-winner-idx" title="Місце в КНУ / Місце в системі НСД України">#${globalIdx} / ${w[1]}</span>
+              <span class="slide-winner-idx" title="Місце в КНУ / Місце в системі НСДУ України">#${globalIdx} / ${w[1]}</span>
               <div class="slide-name-block">
                 <div class="slide-name-l1">
                   <span>${nameObj.line1}</span>
@@ -1923,7 +1923,7 @@
       if (slide.totalParts && slide.totalParts > 1) {
         footerRangeTxt = `Позиції ${start + 1}–${Math.min(end, winners.length)} із ${winners.length} претендентів напряму (Частина ${slide.partNum}/${slide.totalParts})`;
       } else if (winners.length > 10) {
-        footerRangeTxt = `Топ-10 за балом НСД (усього в списку: ${winners.length})`;
+        footerRangeTxt = `Топ-10 за балом НСДУ (усього в списку: ${winners.length})`;
       } else {
         footerRangeTxt = `Усі ${winners.length} претендентів напряму`;
       }
