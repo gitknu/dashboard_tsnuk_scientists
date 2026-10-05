@@ -508,11 +508,12 @@
       flex: 1;
       min-width: 0;
     }
-    .slide-winner-idx {
+.slide-winner-idx {
       font-size: 0.82rem;
       font-weight: 800;
       color: var(--gray-400);
-      min-width: 26px;
+      min-width: 52px;
+      white-space: nowrap;
       flex-shrink: 0;
     }
     /* 2-Line Name Block */
@@ -1902,7 +1903,7 @@
         winnersHtml += `
           <div class="slide-winner-card">
             <div class="slide-winner-left">
-              <span class="slide-winner-idx">#${globalIdx}</span>
+              <span class="slide-winner-idx" title="Місце в КНУ / Місце в системі НСД України">#${globalIdx} / ${w[1]}</span>
               <div class="slide-name-block">
                 <div class="slide-name-l1">
                   <span>${nameObj.line1}</span>
